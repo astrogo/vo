@@ -1,6 +1,7 @@
 package votable
 
 import (
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"os"
@@ -27,7 +28,16 @@ func TestDecoding(t *testing.T) {
 			t.Fatalf("test #%d: error decoding [%s]: %v\n", i, test.fname, err)
 		}
 
-		fmt.Printf("test #%d: %#v\n", i, vo)
+		// fmt.Printf("test #%d: %#v\n", i, vo)
 
+		out := new(bytes.Buffer)
+		enc := xml.NewEncoder(out)
+		enc.Indent("", "  ")
+		err = enc.Encode(vo)
+		if err != nil {
+			t.Fatalf("test #%d: error encoding [%s]: %v\n", i, test.fname, err)
+		}
+
+		fmt.Printf("test #%d:\n%s\n", i, string(out.Bytes()))
 	}
 }
